@@ -16,6 +16,35 @@ Aplicacao web baseada em HTML unico, preparada para deploy no Render.
 
    http://localhost:10000
 
+## Importar XLSX para SQLite
+
+O projeto agora gera um banco SQLite a partir do Excel.
+
+1. Importar manualmente via CLI:
+
+   npm run import:db
+
+2. Arquivo de saida padrao:
+
+   data/soldagem.db
+
+3. Arquivo de entrada padrao:
+
+   Ozango_Controle_Soldagem_Banco_V5_2_3.xlsx
+
+4. Importar informando caminhos:
+
+   node scripts/import-xlsx-to-sqlite.js ./MeuArquivo.xlsx ./data/meu-banco.db
+
+### API de suporte
+
+- GET /api/db-status: status do banco e ultimo import.
+- POST /api/import-xlsx: reimporta um arquivo XLSX da raiz do projeto.
+
+Exemplo do POST:
+
+curl -X POST http://localhost:10000/api/import-xlsx -H "Content-Type: application/json" -d "{\"fileName\":\"Ozango_Controle_Soldagem_Banco_V5_2_3.xlsx\"}"
+
 ## Deploy no Render
 
 Este repositorio ja contem o arquivo `render.yaml`.
