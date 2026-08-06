@@ -1,0 +1,16 @@
+{
+  "name": "controle-de-soldagem-ozango",
+  "version": "5.2.3",
+  "private": true,
+  "description": "Aplicacao de Controle de Soldagem Ozango para deploy no Render",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
