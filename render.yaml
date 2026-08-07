@@ -6,3 +6,10 @@ services:
     buildCommand: npm install
     startCommand: npm start
     autoDeploy: true
+    envVars:
+      - key: SQLITE_DB_PATH
+        value: /data/soldagem.db
+    disk:
+      name: data
+      mountPath: /data
+      sizeGB: 1

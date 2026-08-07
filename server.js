@@ -9,7 +9,25 @@ const {
 } = require('./src/xlsxToSqlite');
 
 const app = express();
-const PORT = process.env.PORT || 10000;
+const DEFAULT_PORT = Number(process.env.PORT || 3000);
+
+function startServer(port) {
+  const server = app.listen(port, '0.0.0.0', () => {
+    console.log(`Controle de Soldagem ouvindo na porta ${port}`);
+    console.log(`Status do banco: http://localhost:${port}/api/db-status`);
+  });
+
+  server.on('error', (error) => {
+    if (error.code === 'EADDRINUSE') {
+      const nextPort = port + 1;
+      console.warn(`Porta ${port} em uso. Tentando a porta ${nextPort}...`);
+      server.close(() => startServer(nextPort));
+      return;
+    }
+
+    throw error;
+  });
+}
 
 app.use(express.json({ limit: '1mb' }));
 app.use(
@@ -86,7 +104,4 @@ function maybeBootstrapDatabase() {
 
 maybeBootstrapDatabase();
 
-app.listen(PORT, () => {
-  console.log(`Controle de Soldagem ouvindo na porta ${PORT}`);
-  console.log(`Status do banco: http://localhost:${PORT}/api/db-status`);
-});
+startServer(DEFAULT_PORT);

@@ -7,8 +7,31 @@ const ROOT_DIR = path.resolve(__dirname, '..');
 const DEFAULT_XLSX_FILE = 'Ozango_Controle_Soldagem_Banco_V5_2_3.xlsx';
 const DEFAULT_DB_FILE = path.join('data', 'soldagem.db');
 
+function resolvePath(inputPath, fallbackPath) {
+  if (!inputPath) {
+    return fallbackPath;
+  }
+  return path.isAbsolute(inputPath) ? inputPath : path.resolve(ROOT_DIR, inputPath);
+}
+
+function resolveDbPath() {
+  const configuredPath = process.env.SQLITE_DB_PATH || process.env.DB_PATH;
+  const fallbackPath = path.join(ROOT_DIR, DEFAULT_DB_FILE);
+  const resolvedPath = resolvePath(configuredPath, fallbackPath);
+
+  if (configuredPath && !fs.existsSync(resolvedPath)) {
+    const legacyPath = fallbackPath;
+    if (fs.existsSync(legacyPath) && legacyPath !== resolvedPath) {
+      fs.mkdirSync(path.dirname(resolvedPath), { recursive: true });
+      fs.copyFileSync(legacyPath, resolvedPath);
+    }
+  }
+
+  return resolvedPath;
+}
+
 const defaultXlsxPath = path.join(ROOT_DIR, DEFAULT_XLSX_FILE);
-const defaultDbPath = path.join(ROOT_DIR, DEFAULT_DB_FILE);
+const defaultDbPath = resolveDbPath();
 
 function quoteIdentifier(value) {
   return `"${String(value).replace(/"/g, '""')}"`;
